@@ -13,13 +13,12 @@ import java.util.Scanner;
  */
 public class App {
     private Scanner scan;
-
     private Cipher currentCipher;
-    private String key;
     private String unencryptedText;
     private String cipheredText;
+    final private String cipheredTextFileUrl = "Data/ciphered-text.txt";
+    final private String unencryptedTextFileUrl = "Data/unciphered-text.txt";
 
-    final private String keyFileUrl = "Data/key";
 
     /**
      * Constructor, instantiates the scanner and a default cipher
@@ -34,8 +33,10 @@ public class App {
      */
     public void run(){
         loadKey();
-        // load texts
+        loadTexts();
         runMenu();
+        saveKey();
+        saveTexts();
     }
 
     /**
@@ -76,6 +77,7 @@ public class App {
                     break;
                 case 3:
                     displayKey();
+                    break;
                 case 4:
                     loadUnencryptedText();
                     break;
@@ -92,10 +94,10 @@ public class App {
                     displayCipheredText();
                     break;
                 case 9:
-                    loadCipheredText();
+                    saveCipheredText();
                     break;
                 case 10:
-                    saveCipheredText();
+                    loadCipheredText();
                     break;
                 case 11:
                     decryptCipheredText();
@@ -113,6 +115,13 @@ public class App {
      * current cipher then informs the user of the now current cipher
      */
     private void switchCipher(){
+        try {
+            currentCipher.saveKey();
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Predefined key file not found");
+        }
+
         System.out.println("Pick a Cipher:");
         System.out.println("1. Caesar");
         System.out.println("2. Keyed Caesar");
@@ -130,11 +139,21 @@ public class App {
             case 3:
                 currentCipher = new VigenereCipher();
                 break;
+            default:
+                System.out.println("Invalid option, cancelling");
+                return;
         }
 
         System.out.println("Current cipher is now " + currentCipher.toString());
-        if (!currentCipher.validateKey(key)){
-            System.err.println("Warning! Current key does not fit this cipher");
+
+        try {
+            currentCipher.loadKey();
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Error loading key, predefined key file not found");
+        }
+        catch (NumberFormatException e){
+            System.out.println("Warning: currently loaded key is invalid");
         }
     }
 
@@ -145,10 +164,13 @@ public class App {
     private void editKey(){
         System.out.println("Enter new key to use followed by enter: ");
         System.out.println("Note: "+ currentCipher.getKeyHint());
-        key = scan.nextLine();
+        String key = scan.nextLine();
 
-        if (!currentCipher.validateKey(key)){
-            System.err.println("Warning! Given key does not fit current cipher");
+        try {
+            currentCipher.setKey(key);
+        }
+        catch (NumberFormatException e){
+            System.out.println("Given key does not fit current cipher, please retry and note key hint");
         }
     }
 
@@ -157,7 +179,7 @@ public class App {
      */
     private void displayKey(){
         System.out.print("Key is: ");
-        System.out.println(key);
+        System.out.println(currentCipher.getKey());
     }
 
     /**
@@ -182,7 +204,7 @@ public class App {
      */
     private void encryptUnencryptedText(){
         try{
-            cipheredText = currentCipher.encryptString(key, unencryptedText);
+            cipheredText = currentCipher.encryptString(unencryptedText);
             System.out.println("Text encrypted, result below: ");
             System.out.println(cipheredText);
         }catch (NumberFormatException e){
@@ -236,13 +258,44 @@ public class App {
      */
     private void loadKey(){
         try {
-            key = getFilesContents(keyFileUrl);
+            currentCipher.loadKey();
         }
         catch(FileNotFoundException e){
-            System.out.println("File not found");
+            System.out.println("Error finding key file, preset file no longer valid");
+        }
+        catch (NumberFormatException e){
+            System.out.println("Warning, currently loaded key is invalid");
         }
     }
 
+    private void loadTexts(){
+        try {
+            unencryptedText = getFilesContents(unencryptedTextFileUrl);
+            cipheredText = getFilesContents(cipheredTextFileUrl);
+        }
+        catch(FileNotFoundException e){
+            System.out.println("Error reading text from file, preset file no longer valid");
+        }
+    }
+
+    private void saveKey(){
+        try {
+            currentCipher.saveKey();
+        }
+        catch(FileNotFoundException e){
+            System.out.println("Error saving text to file, preset file no longer valid");
+        }
+    }
+
+    private void saveTexts(){
+        try {
+            writeStringToFile(unencryptedText, unencryptedTextFileUrl);
+            writeStringToFile(cipheredText, cipheredTextFileUrl);
+        }
+        catch(FileNotFoundException e){
+            System.out.println("Error saving text to file, preset file no longer valid");
+        }
+    }
 
     /**
      * Calls current ciphers decrypt method on a string, will give the user an error if
@@ -250,14 +303,13 @@ public class App {
      */
     private void decryptCipheredText(){
         try{
-            unencryptedText = currentCipher.decryptString(key, cipheredText);
+            unencryptedText = currentCipher.decryptString(cipheredText);
             System.out.println("Text decrypted, result below: ");
             System.out.println(unencryptedText);
         }catch (NumberFormatException e){
             System.out.println("Unable to decrypt text, given key is invalid, please not given key hint when editing key");
         }
     }
-
 
     /**
      * Removes grammar and numbers from a given text and converts to upper case
@@ -284,6 +336,12 @@ public class App {
         return stringBuilder.toString();
     }
 
+    /**
+     * Writes a given string to a file at a given url
+     * @param data String to write
+     * @param url Location to write file to
+     * @throws FileNotFoundException Thrown if url is invalid
+     */
     private void writeStringToFile(String data, String url) throws FileNotFoundException{
         PrintWriter printWriter = new PrintWriter(url);
         printWriter.print(data);
@@ -303,38 +361,36 @@ public class App {
                 return getFilesContents(fileUrl);
 
             } catch (FileNotFoundException e) {
-                System.out.println("File not found, please pick option:");
-                System.out.println("1. Re-enter path");
-                System.out.println("2. Cancel action");
 
-                switch (getNumberFromInput()) {
-                    case 1: // todo: what if they put something other than 1 or 2
-                        break;
-                    case 2:
-                        return "";
+                System.out.println("Could not find file");
+                if (!getRetryOrExit()) {
+                    return "";
                 }
+
             }
         }
     }
 
+    /**
+     * Will write a given string to a file, includes user interaction, requests a url from
+     * the user and validates it, has options to re-enter url if original url is invalid.
+     * @param data String to write to file
+     */
     private void saveFile(String data){
         while (true){
             try{
-                System.out.print("Please enter the path of the file to load: ");
+                System.out.print("Please enter the path to save to: ");
                 String fileUrl = scan.nextLine();
                 writeStringToFile(data, fileUrl);
                 return;
             }
             catch (FileNotFoundException e){
-                System.out.println("Path invalid, please pick option:");
-                System.out.println("1. Re-enter path");
-                System.out.println("2. Cancel action");
-
-                switch (getNumberFromInput()) {
-                    case 1: // todo: what if they put something other than 1 or 2... again
-                        break;
-                    case 2:
-                        return;
+                System.out.println("Invalid path");
+                if (getRetryOrExit()) {
+                    break;
+                }
+                else {
+                    return;
                 }
             }
         }
@@ -353,10 +409,32 @@ public class App {
                 input = scan.nextInt();
                 break;
             } catch (InputMismatchException e) {
+                scan.nextLine(); // clearing buffer before getting new input
                 System.out.print("Please Enter a number");
             }
         }
         scan.nextLine(); // clear buffer to next return
         return input;
+    }
+
+    /**
+     * Used for invalid actions, gets a boolean value from the user on whether they wish to
+     * retry an action or not
+     * @return a boolean representing whether the user wants to retry i.e. true if they do
+     */
+    private boolean getRetryOrExit(){
+        while (true){
+            System.out.println("Please pick option:");
+            System.out.println("1. Retry action");
+            System.out.println("2. Cancel action");
+            switch (getNumberFromInput()){
+                case 1:
+                    return true;
+                case 2:
+                    return false;
+                default:
+                    System.out.println("Invalid option, please try again");
+            }
+        }
     }
 }

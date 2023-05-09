@@ -1,13 +1,25 @@
+/**
+ * Keyed Caesar Cipher class, encrypts and decrypts given text with a Keyed Caesar Cipher
+ * @version 2.0
+ * @author Rosia E Evans
+ */
 public class KeyedCaesarCipher extends Cipher{
     String keyHint = "This cipher expects a number and a string separated by a space";
-
+    String keyString;
     char[] wheel;
     int shift;
 
+    public KeyedCaesarCipher(){
+        keyFileUrl = "Data/keyed-caesar-key.txt";
+    }
 
-    public String encryptString(String keyString, String plainText){
-        processKey(keyString);
-
+    /**
+     * Encrypts a given string with a given key
+     * @param plainText Text to encrypt
+     * @return Encrypted text
+     * @throws NumberFormatException Thrown when key is incorrect
+     */
+    public String encryptString(String plainText) throws NumberFormatException{
         StringBuilder stringBuilder = new StringBuilder();
         for (char character : plainText.toCharArray()){
             character -= 65;
@@ -17,9 +29,13 @@ public class KeyedCaesarCipher extends Cipher{
         return stringBuilder.toString();
     }
 
-    public String decryptString(String keyString, String plainText){
-        processKey(keyString);
-
+    /**
+     * Decrypts a given string with a given key
+     * @param plainText Text to decrypt
+     * @return Decrypted text
+     * @throws NumberFormatException
+     */
+    public String decryptString(String plainText) throws NumberFormatException{
         StringBuilder stringBuilder = new StringBuilder();
         for (char character : plainText.toCharArray()){
             int charIndex = 0;
@@ -30,29 +46,74 @@ public class KeyedCaesarCipher extends Cipher{
                 }
             }
 
-            stringBuilder.append((char)(charIndex+64));
+            charIndex = Math.floorMod((charIndex-shift), 26);
+            stringBuilder.append((char)(charIndex+65));
         }
 
         return stringBuilder.toString();
     }
 
-    public String getKeyHint() {
-        return keyHint;
-    }
-
+    /**
+     * Validated whether a given key will work for this cipher
+     * @param keyString String representation of key
+     * @return Whether the key is valid
+     */
     public boolean validateKey(String keyString){
-        return keyString.matches("^[0-9]* [a-zA-Z]*");
+        return keyString.matches("^-*[0-9]* [a-zA-Z]*");
     }
 
-    public void processKey(String keyString){
+    /**
+     * Internal method to extract key from given string
+     * @param keyString String representing key
+     * @throws NumberFormatException Thrown when key is invalid
+     */
+    protected void processKey(String keyString) throws NumberFormatException{
+        if (!validateKey(keyString)){
+            throw new NumberFormatException("Key invalid for this cipher");
+        }
+
         String[] keyParts = keyString.split(" ");
 
         shift = Integer.parseInt(keyParts[0]);
 
-        String keyWord = keyParts[1];
-        String alphabet = "abcdefghijklmnopqrstuvwxyz";
-        alphabet.replaceAll(keyWord, "");
+        String keyWord = keyParts[1].toUpperCase();
+        keyWord = removeDuplicateLetters(keyWord);
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        alphabet = alphabet.replaceAll("[" + keyWord + "]", "");
         String wheelString = (keyWord + alphabet).toUpperCase();
         wheel = wheelString.toCharArray();
+    }
+
+    /**
+     * Internal method that removes duplicate letters from a string
+     * @param text String to alter
+     * @return Altered string
+     */
+    private String removeDuplicateLetters(String text){
+        for (int i = 1; i < text.length(); i++)
+        {
+            String checked = text.substring(0, i);
+            String toAlter = text.substring(i, text.length());
+            toAlter = toAlter.replaceAll("[" + checked + "]", "");
+            text = checked + toAlter;
+        }
+        return text;
+    }
+
+    /**
+     * Getter for the key hint
+     * @return Key hint
+     */
+    public String getKeyHint() {
+        return keyHint;
+    }
+
+    /**
+     * Gets string representation of object
+     * @return String representation of object
+     */
+    @Override
+    public String toString(){
+        return "Keyed Caesar Cipher";
     }
 }

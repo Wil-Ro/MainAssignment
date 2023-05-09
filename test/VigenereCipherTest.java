@@ -2,25 +2,25 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test class for Casear Cipher, runs basic tests used during development to ensure encrypt and
+ * Test class for Vigenere Cipher, runs basic tests used during development to ensure encrypt and
  * decrypt work
  * @version 1.0
  * @author Rosia E Evans
  */
-public class CaesarCipherTest extends CipherTest{
+public class VigenereCipherTest extends CipherTest{
     /**
      * Runs a successful basic encryption
      */
     @Test
     public void successfulEncryption(){
-        Cipher cipher = new CaesarCipher();
-        String key = "5";
+        Cipher cipher = new VigenereCipher();
+        String key = "LEMON";
         String text = "The quick brown fox jumped over the lazy dog";
         text = convertToPlainText(text);
 
         cipher.setKey(key);
         String result = cipher.encryptString(text);
-        Assert.assertEquals("YMJVZNHPGWTBSKTCOZRUJITAJWYMJQFEDITL", result);
+        Assert.assertEquals("ELQEHTGWPEZAZTBINGACPHAJRCXTSYLDKRBR", result);
     }
 
     /**
@@ -28,9 +28,9 @@ public class CaesarCipherTest extends CipherTest{
      */
     @Test
     public void successfulDecryption(){
-        Cipher cipher = new CaesarCipher();
-        String key = "5";
-        String text = "Ymj vznhp gwtbs ktc ozruji tajw ymj qfed itl";
+        Cipher cipher = new VigenereCipher();
+        String key = "LEMON";
+        String text = "ELQEHTGWPEZAZTBINGACPHAJRCXTSYLDKRBR";
         text = convertToPlainText(text);
 
         cipher.setKey(key);
@@ -39,20 +39,17 @@ public class CaesarCipherTest extends CipherTest{
     }
 
     /**
-     * Runs a basic encryption with a large shift
+     * Tests whether values wrap around correctly
      */
     @Test
-    public void largeShiftTest(){
-        Cipher cipher = new CaesarCipher();
-        String key = "40";
+    public void wrapAroundTest(){
+        Cipher cipher = new VigenereCipher();
+        String key = "qwertyuiop";
         String text = "abcdefghijklmnopqrstuvwxyz";
         text = convertToPlainText(text);
 
         cipher.setKey(key);
         String result = cipher.encryptString(text);
-        Assert.assertEquals("OPQRSTUVWXYZABCDEFGHIJKLMN", result);
+        Assert.assertEquals("QXGUXDAPWYAHQEHNKZGIKRAORX", result);
     }
-
-
-
 }
