@@ -440,3 +440,4 @@ public class App{
 }
 
 // todo decrypting with no text causes nullpointer error
+// todo saves word null on empty text
