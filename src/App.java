@@ -11,7 +11,7 @@ import java.util.Scanner;
  * @version 1.0
  * @author Rosia E Evans
  */
-public class App {
+public class App{
     private Scanner scan;
     private Cipher currentCipher;
     private String unencryptedText;
@@ -438,3 +438,5 @@ public class App {
         }
     }
 }
+
+// todo decrypting with no text causes nullpointer error
