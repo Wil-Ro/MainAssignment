@@ -18,6 +18,11 @@ import java.util.Scanner;
 
 import javafx.scene.control.ComboBox;
 
+/**
+ * Application to run a GUI version of the cipher program
+ * @author Rosia E Evans
+ * @version 1.0
+ */
 public class GUIApp extends Application {
 
     Cipher currentCipher;
@@ -161,8 +166,8 @@ public class GUIApp extends Application {
     }
 
     /**
-     * validates current key in keyBox
-     * @return
+     * Validates current key in keyBox
+     * @return Boolean for current keys validity
      */
     public boolean isCurrentKeyValid(){
         if (!currentCipher.validateKey(keyBox.getText())){

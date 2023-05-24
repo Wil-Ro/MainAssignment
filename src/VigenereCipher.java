@@ -6,6 +6,9 @@
 public class VigenereCipher extends Cipher{
     String key;
 
+    /**
+     * Constructor for Vigenere Cipher, sets default values
+     */
     public VigenereCipher(){
 
         keyFileUrl = "Data/vigenere-key.txt";
@@ -37,7 +40,7 @@ public class VigenereCipher extends Cipher{
      * Decrypts a given string with a given key
      * @param plainText Text to decrypt
      * @return Decrypted text
-     * @throws NumberFormatException
+     * @throws NumberFormatException Thrown when invalid key is used
      */
     public String decryptString(String plainText) throws NumberFormatException{
         char[] key = this.key.toCharArray();

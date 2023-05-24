@@ -6,6 +6,9 @@
 public class CaesarCipher extends Cipher{
     int shift;
 
+    /**
+     * Constructor for Caesar Cipher
+     */
     public CaesarCipher(){
         keyFileUrl = "Data/caesar-key.txt";
         keyHint = "This cipher expects a number";
@@ -32,7 +35,7 @@ public class CaesarCipher extends Cipher{
      * Decrypts a given string with a given key
      * @param plainText Text to decrypt
      * @return Decrypted text
-     * @throws NumberFormatException
+     * @throws NumberFormatException Thrown when invalid key is given
      */
     public String decryptString(String plainText) throws NumberFormatException{
         shift = 0-shift;

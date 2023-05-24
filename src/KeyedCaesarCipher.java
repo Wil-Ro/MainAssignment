@@ -9,6 +9,9 @@ public class KeyedCaesarCipher extends Cipher{
     char[] wheel;
     int shift;
 
+    /**
+     * Keyed Caesar Cipher's constuctor, sets default values
+     */
     public KeyedCaesarCipher(){
 
         keyFileUrl = "Data/keyed-caesar-key.txt";
@@ -35,7 +38,7 @@ public class KeyedCaesarCipher extends Cipher{
      * Decrypts a given string with a given key
      * @param plainText Text to decrypt
      * @return Decrypted text
-     * @throws NumberFormatException
+     * @throws NumberFormatException Throw when invalid key is given
      */
     public String decryptString(String plainText) throws NumberFormatException{
         StringBuilder stringBuilder = new StringBuilder();

@@ -229,6 +229,12 @@ public class App{
         unencryptedText = convertToPlainText(unencryptedText);
     }
 
+    /**
+     * Saves text to file from a filepath taken from the user,
+     *
+     * If an invalid file is given this will give the user the choice of stopping the action
+     * or re-inputting a new url
+     */
     private void saveUnencryptedText(){
         saveFile(unencryptedText);
     }
@@ -249,6 +255,12 @@ public class App{
         cipheredText = convertToPlainText(cipheredText);
     }
 
+    /**
+     * Saves text to file from a filepath taken from the user,
+     *
+     * If an invalid file is given this will give the user the choice of stopping the action
+     * or re-inputting a new url
+     */
     private void saveCipheredText(){
         saveFile(cipheredText);
     }
@@ -268,6 +280,9 @@ public class App{
         }
     }
 
+    /**
+     * Loads unciphered and ciphered text from files, called when program first starts
+     */
     private void loadTexts(){
         try {
             unencryptedText = getFilesContents(unencryptedTextFileUrl);
@@ -278,6 +293,9 @@ public class App{
         }
     }
 
+    /**
+     * Saves key of currently selected cipher
+     */
     private void saveKey(){
         try {
             currentCipher.saveKey();
@@ -287,6 +305,9 @@ public class App{
         }
     }
 
+    /**
+     * Saves unciphered and ciphered text to files, called when program first starts
+     */
     private void saveTexts(){
         try {
             writeStringToFile(unencryptedText, unencryptedTextFileUrl);

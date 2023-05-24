@@ -26,7 +26,7 @@ public abstract class Cipher {
      * Decrypts a given string with a given key
      * @param plainText Text to decrypt
      * @return Decrypted text
-     * @throws NumberFormatException
+     * @throws NumberFormatException Thrown when invalid key is given
      */
     abstract public String decryptString(String plainText) throws NumberFormatException;
 
@@ -46,6 +46,8 @@ public abstract class Cipher {
 
     /**
      * Loads key into cipher from file at given url
+     * @throws FileNotFoundException Thrown when invalid url given
+     * @throws NumberFormatException Thrown when key loaded is invalid
      */
     public void loadKey() throws FileNotFoundException, NumberFormatException {
         Scanner scan = new Scanner(new FileReader(keyFileUrl));
@@ -57,6 +59,7 @@ public abstract class Cipher {
 
     /**
      * Saves key into file at given url
+     * @throws FileNotFoundException Thrown when invalid url given
      */
     public void saveKey() throws FileNotFoundException{
         PrintWriter printWriter = new PrintWriter(keyFileUrl);
@@ -70,6 +73,11 @@ public abstract class Cipher {
      */
     abstract public String getKeyHint();
 
+    /**
+     * Setter for Ciphers key
+     * @param key Key to set
+     * @throws NumberFormatException Thrown when invalid key is given
+     */
     public void setKey(String key) throws NumberFormatException{
         if (!validateKey(key)){
             throw new NumberFormatException("Invalid key given");
@@ -79,6 +87,10 @@ public abstract class Cipher {
         processKey(keyString);
     }
 
+    /**
+     * Getter for Ciphers key
+     * @return String representation of currently held key
+     */
     public String getKey(){
         return keyString;
     }
