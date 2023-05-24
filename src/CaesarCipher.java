@@ -4,12 +4,11 @@
  * @author Rosia E Evans
  */
 public class CaesarCipher extends Cipher{
-    String keyHint = "This cipher expects a number";
-    String keyString;
     int shift;
 
     public CaesarCipher(){
         keyFileUrl = "Data/caesar-key.txt";
+        keyHint = "This cipher expects a number";
     }
 
     /**
@@ -48,7 +47,7 @@ public class CaesarCipher extends Cipher{
      * @return Whether the key is valid
      */
     public boolean validateKey(String keyString){
-        return keyString.matches("-*[0-9]*");
+        return keyString.matches("-*[0-9]+");
     }
 
     /**

@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public abstract class Cipher {
     String keyHint;
-    protected String keyFileUrl;
+    String keyFileUrl;
     String keyString;
 
 
@@ -48,7 +48,7 @@ public abstract class Cipher {
      * Loads key into cipher from file at given url
      */
     public void loadKey() throws FileNotFoundException, NumberFormatException {
-        Scanner scan = new Scanner(new FileReader(keyFileUrl)); // todo accesses the wrong keyFile
+        Scanner scan = new Scanner(new FileReader(keyFileUrl));
         keyString = scan.nextLine();
         scan.close();
 

@@ -386,10 +386,7 @@ public class App{
             }
             catch (FileNotFoundException e){
                 System.out.println("Invalid path");
-                if (getRetryOrExit()) {
-                    break;
-                }
-                else {
+                if (!getRetryOrExit()) {
                     return;
                 }
             }
@@ -438,6 +435,3 @@ public class App{
         }
     }
 }
-
-// todo decrypting with no text causes nullpointer error
-// todo saves word null on empty text

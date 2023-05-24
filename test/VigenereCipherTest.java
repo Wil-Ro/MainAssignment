@@ -52,4 +52,19 @@ public class VigenereCipherTest extends CipherTest{
         String result = cipher.encryptString(text);
         Assert.assertEquals("QXGUXDAPWYAHQEHNKZGIKRAORX", result);
     }
+
+    /**
+     * Tests whether keys are correctly altered
+     */
+    @Test
+    public void mixedCaseKey(){
+        Cipher cipher = new VigenereCipher();
+        String key = "qwertyUIOp";
+        String text = "abcdefghijklmnopqrstuvwxyz";
+        text = convertToPlainText(text);
+
+        cipher.setKey(key);
+        String result = cipher.encryptString(text);
+        Assert.assertEquals("QXGUXDAPWYAHQEHNKZGIKRAORX", result);
+    }
 }

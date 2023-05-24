@@ -54,7 +54,8 @@ public class KeyedCaesarCipherTest extends CipherTest{
     }
 
     /**
-     * Tests Cipher deals with keys with duplicate letters
+     * Tests Cipher deals with keys with duplicate letters,
+     * Note: does not test whether encryption works as a whole
      */
     @Test
     public void DuplicateLetterTest(){
@@ -67,5 +68,20 @@ public class KeyedCaesarCipherTest extends CipherTest{
         String result = cipher.encryptString(text);
         result = cipher.decryptString(result);
         Assert.assertEquals(text, result);
+    }
+
+    /**
+     * Tests whether keys are correctly altered
+     */
+    @Test
+    public void mixedCaseKey(){
+        Cipher cipher = new KeyedCaesarCipher();
+        String key = "12 qwertyUIOp";
+        String text = "abcdefghijklmnopqrstuvwxyz";
+        text = convertToPlainText(text);
+
+        cipher.setKey(key);
+        String result = cipher.encryptString(text);
+        Assert.assertEquals("CDFGHJKLMNSVXZQWERTYUIOPAB", result);
     }
 }

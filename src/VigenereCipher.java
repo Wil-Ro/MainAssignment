@@ -4,13 +4,12 @@
  * @author Rosia E Evans
  */
 public class VigenereCipher extends Cipher{
-    String keyHint = "This cipher expects a string";
-    String keyString;
-
     String key;
 
     public VigenereCipher(){
+
         keyFileUrl = "Data/vigenere-key.txt";
+        keyHint = "This cipher expects a string";
     }
 
     /**
@@ -61,7 +60,7 @@ public class VigenereCipher extends Cipher{
      * @return Whether the key is valid
      */
     public boolean validateKey(String keyString){
-        return keyString.matches("[a-zA-Z]*");
+        return keyString.matches("[a-zA-Z]+");
     }
 
     /**
@@ -93,6 +92,3 @@ public class VigenereCipher extends Cipher{
         return "Vignere Cipher";
     }
 }
-
-// todo less casting in shifts, just make char always an integer
-// todo do we actually need process key????

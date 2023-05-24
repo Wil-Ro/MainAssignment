@@ -1,16 +1,18 @@
+import java.util.ArrayList;
+
 /**
  * Keyed Caesar Cipher class, encrypts and decrypts given text with a Keyed Caesar Cipher
  * @version 2.0
  * @author Rosia E Evans
  */
 public class KeyedCaesarCipher extends Cipher{
-    String keyHint = "This cipher expects a number and a string separated by a space";
-    String keyString;
     char[] wheel;
     int shift;
 
     public KeyedCaesarCipher(){
+
         keyFileUrl = "Data/keyed-caesar-key.txt";
+        keyHint = "This cipher expects a number and a string separated by a space";
     }
 
     /**
@@ -59,7 +61,7 @@ public class KeyedCaesarCipher extends Cipher{
      * @return Whether the key is valid
      */
     public boolean validateKey(String keyString){
-        return keyString.matches("^-*[0-9]* [a-zA-Z]*");
+        return keyString.matches("^-*[0-9]+ [a-zA-Z]+");
     }
 
     /**
@@ -90,14 +92,19 @@ public class KeyedCaesarCipher extends Cipher{
      * @return Altered string
      */
     private String removeDuplicateLetters(String text){
-        for (int i = 1; i < text.length(); i++)
+        ArrayList<Character> checked = new ArrayList<Character>();
+        StringBuilder builder = new StringBuilder(text);
+        for (int i = 0; i < builder.length();)
         {
-            String checked = text.substring(0, i);
-            String toAlter = text.substring(i, text.length());
-            toAlter = toAlter.replaceAll("[" + checked + "]", "");
-            text = checked + toAlter;
+            if (checked.contains(builder.charAt(i))){
+                builder.deleteCharAt(i);
+            }
+            else{
+                checked.add(text.charAt(i));
+                i++;
+            }
         }
-        return text;
+        return builder.toString();
     }
 
     /**
